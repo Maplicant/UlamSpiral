@@ -1,26 +1,41 @@
 extern crate image;
 extern crate primal;
+extern crate clap;
 
-use std::env;
 use std::fs::File;
+use clap::{Arg, App};
 
 
 const DIRECTIONS: [(i32, i32); 4] = [(0, -1), (-1, 0), (0, 1), (1, 0)];
 
+fn valid_size(o: String) -> Result<(), String> {
+    if let Err(..) = o.parse::<u32>() {
+        return Err(format!("'{}' must be a positive integer.", o));
+    }
+    Ok(())
+}
+
 fn main() {
-    // Get user input
-    let mut size: i32 = match env::args().nth(1) {
-        None => panic!("Didn't get size argument."),
-        Some(input) => match input.parse::<i32>() {
-            Err(_) => panic!("Unable to parse input."),
-            Ok(parsed) => parsed
-        }
-    };
+    let matches = App::new("UlamSpiral")
+                          .version("0.1")
+                          .author("Maplicant <maplicant@gmail.com>")
+                          .about("Generates Ulam spirals")
+                          .arg(Arg::with_name("size")
+                               .short("s")
+                               .long("s")
+                               .value_name("SIZE")
+                               .help("The size of the Ulam Spiral")
+                               .validator(valid_size)
+                               .takes_value(true))
+                          .get_matches();
+    let mut size: i32 = matches.value_of("size").unwrap_or("201").parse::<i32>().expect("Couldn't parse input. Try running UlamSpiral --help");
     if size % 2 == 0 {
         size = size + 1;
         println!("Size isn't odd, new dimensions are {0}x{0}", size);
     }
     let offset = size / 2;
+
+
 
     // Initialize grid
     let mut min_x = 0;
@@ -34,7 +49,6 @@ fn main() {
     let mut direction: usize = 3;
     let mut value: usize = 1;
     let sieve = primal::Sieve::new((size*size) as usize);
-    // let mut grid: Grid = Grid::new(size as usize);
     let mut imgbuf = image::ImageBuffer::new(size as u32, size as u32);
 
     // Fill grid
@@ -78,54 +92,6 @@ fn main() {
         value += 1;
     }
 
-    // grid.print();
-    // grid.save_to_image();
     let ref mut fout = File::create("output.png").expect("Failed to create output.png.");
     image::ImageLuma8(imgbuf).save(fout, image::PNG).expect("Failed to save image.");
 }
-
-// struct Grid {
-//     values: Box<Vec<bool>>,
-//     size: usize
-// }
-//
-// impl Grid {
-//     fn new(size: usize) -> Grid {
-//         Grid {
-//             values: Box::new(vec![false; size * size + 1]),
-//             size: size
-//         }
-//     }
-//     fn get(&self, x: usize, y: usize) -> bool {
-//         self.values[x * (self.size - 1) + y]
-//     }
-//     fn set(&mut self, x: usize, y: usize, value: bool) {
-//         self.values[x * (self.size - 1) + y] = value;
-//     }
-//     fn print(&self) {
-//         let mut counter = 0;
-//         for value in self.values.iter() {
-//             print!("{}", match *value {
-//                 true => "#",
-//                 false => " "
-//             });
-//             if counter > self.size {
-//                 println!("");
-//                 counter = 0;
-//             }
-//             counter += 1;
-//         }
-//     }
-//     fn save_to_image(&self) {
-//         let mut imgbuf = image::ImageBuffer::new(self.size as u32, self.size as u32);
-//         for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-//             if self.get(x as usize, y as usize) {
-//                 *pixel = image::Luma([0u8]);
-//             } else {
-//                 *pixel = image::Luma([255u8]);
-//             }
-//         }
-//         let ref mut fout = File::create("output.png").unwrap();
-//         let _ = image::ImageLuma8(imgbuf).save(fout, image::PNG);
-//     }
-// }
