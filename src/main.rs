@@ -1,6 +1,9 @@
 extern crate image;
+extern crate primal;
+
 use std::env;
 use std::fs::File;
+
 
 const DIRECTIONS: [(i32, i32); 4] = [(0, -1), (-1, 0), (0, 1), (1, 0)];
 
@@ -29,7 +32,8 @@ fn main() {
     let mut xv = 1;
     let mut yv = 0;
     let mut direction: usize = 3;
-    let mut value: u32 = 1;
+    let mut value: usize = 1;
+    let sieve = primal::Sieve::new((size*size) as usize);
     // let mut grid: Grid = Grid::new(size as usize);
     let mut imgbuf = image::ImageBuffer::new(size as u32, size as u32);
 
@@ -67,10 +71,7 @@ fn main() {
             break;
         } else {
             // grid.set((x + offset) as usize, (y + offset) as usize, is_prime(value));
-            if is_prime(value) {
-                imgbuf.put_pixel((x + offset) as u32, (y + offset) as u32, image::Luma([0u8]))
-            }
-            else {
+            if !sieve.is_prime(value) {
                 imgbuf.put_pixel((x + offset) as u32, (y + offset) as u32, image::Luma([255u8]))
             }
         }
@@ -128,22 +129,3 @@ fn main() {
 //         let _ = image::ImageLuma8(imgbuf).save(fout, image::PNG);
 //     }
 // }
-
-fn is_prime(n: u32) -> bool {
-    if n == 2 || n == 3 {
-        return true;
-    } else if n % 2 == 0 || n % 3 == 0 {
-        return false;
-    }
-
-    let mut i = 5u32;
-    let mut w = 2u32;
-    while i*i <= n {
-        if n % i == 0 {
-            return false;
-        }
-        i += w;
-        w = 6 - w;
-    }
-    true
-}
