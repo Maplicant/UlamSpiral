@@ -1,0 +1,7 @@
+[package]
+name = "UlanSpiral"
+version = "0.1.0"
+authors = ["Maplicant <maplicant@gmail.com>"]
+
+[dependencies]
+image = "0.10.3"
