@@ -1,7 +1,8 @@
 [package]
-name = "UlanSpiral"
+name = "UlamSpiral"
 version = "0.1.0"
 authors = ["Maplicant <maplicant@gmail.com>"]
 
 [dependencies]
 image = "0.10.3"
+primal = "*"
