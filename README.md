@@ -9,4 +9,5 @@ An Ulam spiral generator written in Rust.
 
 # Demo
 Output for `./target/release/UlamSpiral -s 200`:
+
 ![sample200.png](sample200.png)
