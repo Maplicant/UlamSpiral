@@ -18,11 +18,11 @@ fn valid_size(o: String) -> Result<(), String> {
 fn main() {
     let matches = App::new("UlamSpiral")
                           .version("0.1")
-                          .author("Maplicant <maplicant@gmail.com>")
+                          .author("Mapicant <maplicant@gmail.com>")
                           .about("Generates Ulam spirals")
                           .arg(Arg::with_name("size")
                                .short("s")
-                               .long("s")
+                               .long("size")
                                .value_name("SIZE")
                                .help("The size of the Ulam Spiral")
                                .validator(valid_size)
