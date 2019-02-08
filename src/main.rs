@@ -18,7 +18,7 @@ fn valid_size(o: String) -> Result<(), String> {
 fn main() {
     let matches = App::new("UlamSpiral")
                           .version("0.1")
-                          .author("Mapicant <maplicant@gmail.com>")
+                          .author("Maurits van Altvorst <mvanaltvorst@icloud.com>")
                           .about("Generates Ulam spirals")
                           .arg(Arg::with_name("size")
                                .short("s")
